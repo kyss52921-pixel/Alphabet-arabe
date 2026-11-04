@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alphabet arabe</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#6D28D9">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{
+  color-scheme: light dark;
+  --bg:#F5F1FF; --surface:#FFFFFF; --ink:#1E1535; --muted:#6B5F85;
+  --accent:#6D28D9; --on-accent:#FFFFFF; --gold:#A78BFA; --line:#DDD3F5;
+  --bad:#B8372F; --good:#1F7A52; --tint:#EBE3FF; --scrim:rgba(20,10,40,.5);
+  --ar:"Noto Naskh Arabic","Amiri","Scheherazade New","Geeza Pro","Al Nile","Traditional Arabic","Times New Roman",serif;
+  --ui:"Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#1A1030; --surface:#271A45; --ink:#F3EEFF; --muted:#B3A5D6;
+    --accent:#B794F6; --on-accent:#1A1030; --gold:#C4A8FF; --line:#3D2B66;
+    --bad:#F08A82; --good:#6FD0A0; --tint:#34255C; --scrim:rgba(0,0,0,.6);
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:16px;line-height:1.45;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.ar{font-family:var(--ar)}
+.app{max-width:520px;margin:0 auto;padding:22px 16px 100px;min-height:100vh}
+
+/* En-tête */
+header{margin-bottom:18px}
+.title-ar{font-family:var(--ar);font-size:2.9rem;line-height:1.25;margin:0;direction:rtl;text-align:left}
+.title-fr{margin:0 0 14px;color:var(--muted);font-size:.95rem}
+.bar{height:8px;border-radius:99px;background:var(--tint);overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--gold);border-radius:99px;transition:width .35s ease}
+.bar-txt{margin:6px 0 0;font-size:.85rem;color:var(--muted)}
+
+.hint{margin:0 0 12px;color:var(--muted);font-size:.9rem}
+
+/* Grille des lettres */
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.tile{position:relative;aspect-ratio:1/1.05;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px;overflow:hidden;transition:transform .12s ease,border-color .12s ease}
+.tile:active{transform:scale(.96)}
+.tile .g{font-family:var(--ar);font-size:2.4rem;line-height:1.3}
+.tile .nm{font-size:.74rem;color:var(--muted)}
+.tile.done{border-color:var(--gold)}
+.tile.done::after{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;background:var(--gold)}
+
+/* Navigation */
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);z-index:5}
+nav .in{max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+nav button{background:none;border:0;padding:16px 2px 18px;font-size:.85rem;font-weight:600;color:var(--muted);border-top:3px solid transparent}
+nav button[aria-current="page"]{color:var(--accent);border-top-color:var(--accent)}
+
+/* Fiche lettre */
+.scrim{position:fixed;inset:0;background:var(--scrim);z-index:10;display:flex;align-items:flex-end;justify-content:center}
+.scrim[hidden]{display:none}
+.sheet{width:100%;max-width:520px;max-height:94vh;overflow:auto;background:var(--bg);border-radius:22px 22px 0 0;padding:14px 16px 24px;animation:up .22s ease-out}
+@keyframes up{from{transform:translateY(28px);opacity:.4}to{transform:none;opacity:1}}
+.sh-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ghost{background:none;border:0;color:var(--accent);padding:10px 8px;font-weight:600}
+.ghost[disabled]{color:var(--muted);opacity:.45;cursor:default}
+.big{font-family:var(--ar);font-size:8.5rem;line-height:1.25;text-align:center;margin:4px 0 0}
+.sheet h2{margin:0;text-align:center;font-size:1.5rem}
+.sheet h2 .ar{font-size:1.5rem;color:var(--muted);margin-left:8px;font-weight:400}
+.snd{text-align:center;margin:4px 0 16px;color:var(--muted)}
+.forms{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.form{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 2px 6px;text-align:center}
+.form .g{display:block;font-family:var(--ar);font-size:2.3rem;line-height:1.5;direction:rtl}
+.form .lb{font-size:.74rem;color:var(--muted)}
+.note{font-size:.85rem;color:var(--muted);margin:8px 0 0}
+.ex{margin-top:14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.ex .w{font-family:var(--ar);font-size:2.4rem;line-height:1.4;direction:rtl}
+.ex .w .hl{color:var(--accent);font-weight:700}
+.ex .m{font-size:.9rem;color:var(--muted)}
+.ex .m b{color:var(--ink);font-weight:600}
+.acts{display:grid;gap:10px;margin-top:14px}
+.btn{border-radius:12px;padding:14px;font-weight:600;border:1.5px solid var(--accent);background:none;color:var(--accent)}
+.btn.main{background:var(--accent);color:var(--on-accent)}
+.btn.on{border-color:var(--gold);color:var(--ink);background:color-mix(in srgb,var(--gold) 22%,var(--surface))}
+.round{flex:none;width:48px;height:48px;border-radius:50%;border:1.5px solid var(--accent);background:none;color:var(--accent);font-size:1.2rem}
+
+/* Quiz */
+.modes{display:grid;gap:10px}
+.mode{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.mode b{display:block;font-size:1.05rem}
+.mode span{color:var(--muted);font-size:.9rem}
+.q-head{display:flex;justify-content:space-between;color:var(--muted);font-size:.9rem;margin-bottom:8px}
+.q-prompt{background:var(--surface);border:1px solid var(--line);border-radius:18px;min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:14px;padding:12px}
+.q-prompt .g{font-family:var(--ar);font-size:6.5rem;line-height:1.3}
+.q-prompt .nmbig{font-size:2.2rem;font-weight:700}
+.q-prompt .sub{color:var(--muted);font-size:.9rem}
+.opts{display:grid;gap:10px}
+.opts.two{grid-template-columns:1fr 1fr}
+.opt{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:14px;min-height:60px;font-weight:600;font-size:1.1rem}
+.opt.ar-o{font-family:var(--ar);font-size:2.6rem;line-height:1.4;font-weight:400}
+.opt.good{border-color:var(--good);background:color-mix(in srgb,var(--good) 18%,var(--surface))}
+.opt.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 16%,var(--surface))}
+.fb{margin:14px 0 0;font-weight:600}
+.fb.good{color:var(--good)} .fb.bad{color:var(--bad)}
+.score{font-size:3rem;font-weight:700;margin:6px 0}
+.missed{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:10px 0 16px}
+.missed .tile{aspect-ratio:1}
+.missed .tile .g{font-size:1.9rem}
+
+.trace[hidden]{display:none}
+.trace canvas{width:100%;height:230px;background:var(--surface);border:1px solid var(--line);border-radius:14px;touch-action:none;display:block}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;direction:rtl}
+.chip{flex:none;min-width:48px;height:48px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-family:var(--ar);font-size:1.6rem}
+.chip[aria-pressed=true]{border-color:var(--accent);background:var(--tint)}
+.vcards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vcard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px;text-align:center}
+.vcard .g{font-family:var(--ar);font-size:3.6rem;line-height:1.4;display:block}
+.vcard b{display:block}.vcard span{font-size:.85rem;color:var(--muted)}
+.word{font-family:var(--ar);font-size:4rem;line-height:1.5;text-align:center;direction:rtl}
+.reveal{text-align:center;min-height:56px;color:var(--muted)}
+.reveal b{font-size:1.3rem;display:block;color:var(--ink)}
+.chk{display:flex;gap:8px;align-items:center;margin:12px 0}
+@media (prefers-reduced-motion: reduce){
+  .sheet{animation:none}.bar>i,.tile{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1 class="title-ar" lang="ar">الأبجدية العربية</h1>
+    <p class="title-fr">Apprendre l'alphabet arabe, lettre par lettre</p>
+    <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="28" id="bar"><i id="barfill" style="width:0%"></i></div>
+    <p class="bar-txt" id="bartxt"></p>
+  </header>
+  <main id="view"></main>
+</div>
+
+<nav aria-label="Navigation">
+  <div class="in">
+    <button data-tab="alphabet" aria-current="page">Alphabet</button>
+    <button data-tab="vowels">Voyelles</button>
+    <button data-tab="read">Lecture</button>
+    <button data-tab="quiz">Exercices</button>
+  </div>
+</nav>
+
+<div class="scrim" id="scrim" hidden>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Détail de la lettre"></div>
+</div>
+
+<script>
+const Z = "\u200D";
+const HAS_TTS = "speechSynthesis" in window;
+
+// [lettre, nom, nom arabe, son, se lie à la suivante, mot, translittération, traduction, motif de surlignage]
+const RAW = [
+ ["ا","Alif","ألف","a long, support de voyelle",0,"أَسَد","asad","lion","[اأإآ]"],
+ ["ب","Bā'","باء","b comme « bateau »",1,"بَيْت","bayt","maison"],
+ ["ت","Tā'","تاء","t comme « table »",1,"تُفَّاح","tuffāḥ","pomme"],
+ ["ث","Thā'","ثاء","th anglais de « think »",1,"ثَعْلَب","tha‘lab","renard"],
+ ["ج","Jīm","جيم","dj comme « djembé »",1,"جَمَل","jamal","chameau"],
+ ["ح","Ḥā'","حاء","h expiré du fond de la gorge",1,"حَلِيب","ḥalīb","lait"],
+ ["خ","Khā'","خاء","kh, comme le j espagnol de « jamón »",1,"خُبْز","khubz","pain"],
+ ["د","Dāl","دال","d comme « dire »",0,"دُبّ","dubb","ours"],
+ ["ذ","Dhāl","ذال","th anglais de « this »",0,"ذُرَة","dhura","maïs"],
+ ["ر","Rā'","راء","r roulé, comme en italien",0,"رَجُل","rajul","homme"],
+ ["ز","Zāy","زاي","z comme « zèbre »",0,"زَهْرَة","zahra","fleur"],
+ ["س","Sīn","سين","s comme « soleil »",1,"سَمَك","samak","poisson"],
+ ["ش","Shīn","شين","ch comme « chat »",1,"شَمْس","shams","soleil"],
+ ["ص","Ṣād","صاد","s appuyé, plus grave",1,"صَقْر","ṣaqr","faucon"],
+ ["ض","Ḍād","ضاد","d appuyé, plus grave",1,"ضِفْدَع","ḍifda‘","grenouille"],
+ ["ط","Ṭā'","طاء","t appuyé, plus grave",1,"طَائِر","ṭā'ir","oiseau"],
+ ["ظ","Ẓā'","ظاء","th de « this » appuyé",1,"ظَرْف","ẓarf","enveloppe"],
+ ["ع","‘Ayn","عين","son de gorge serrée, sans équivalent",1,"عَيْن","‘ayn","œil"],
+ ["غ","Ghayn","غين","r grasseyé, comme dans « rue »",1,"غُرَاب","ghurāb","corbeau"],
+ ["ف","Fā'","فاء","f comme « fleur »",1,"فِيل","fīl","éléphant"],
+ ["ق","Qāf","قاف","k prononcé tout au fond de la gorge",1,"قَمَر","qamar","lune"],
+ ["ك","Kāf","كاف","k comme « kilo »",1,"كِتَاب","kitāb","livre"],
+ ["ل","Lām","لام","l comme « lune »",1,"لَيْمُون","laymūn","citron"],
+ ["م","Mīm","ميم","m comme « maman »",1,"مَوْز","mawz","banane"],
+ ["ن","Nūn","نون","n comme « nuit »",1,"نَجْمَة","najma","étoile"],
+ ["ه","Hā'","هاء","h aspiré, comme en anglais « home »",1,"هِلَال","hilāl","croissant"],
+ ["و","Wāw","واو","ou comme « loup », ou w",0,"وَرْدَة","warda","rose"],
+ ["ي","Yā'","ياء","i comme « midi », ou y",1,"يَد","yad","main"]
+];
+const L = RAW.map(r => ({c:r[0],n:r[1],ar:r[2],s:r[3],j:r[4],w:r[5],tr:r[6],t:r[7],p:r[8]||r[0]}));
+const FAM = ["بتثني","جحخ","دذ","رز","سش","صض","طظ","عغ","فق"];
+
+const $ = s => document.querySelector(s);
+let tab = "alphabet", cur = null, Q = null;
+let learned = new Set();
+
+/* Sauvegarde (si disponible) */
+async function load(){
+  try{ const v = localStorage.getItem("learned"); if(v) learned = new Set(JSON.parse(v)); }catch(e){}
+  render();
+}
+async function save(){
+  try{ localStorage.setItem("learned", JSON.stringify([...learned])); }catch(e){}
+}
+
+function speak(text){
+  if(!HAS_TTS) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "ar-SA"; u.rate = .8;
+  speechSynthesis.speak(u);
+}
+const shuffle = a => { a = [...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const hl = l => l.w.replace(new RegExp("("+l.p+")([\u064B-\u0652]*)","g"), '<span class="hl">$1$2</span>');
+
+/* Rendu principal */
+function render(){
+  const n = learned.size;
+  $("#barfill").style.width = (n/28*100)+"%";
+  $("#bar").setAttribute("aria-valuenow", n);
+  $("#bartxt").textContent = n === 0 ? "Aucune lettre apprise pour l'instant" : n+" sur 28 lettres apprises";
+  document.querySelectorAll("nav button").forEach(b => {
+    if(b.dataset.tab===tab) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current");
+  });
+  ({alphabet:renderGrid,vowels:renderVowels,read:renderRead,quiz:renderQuiz})[tab]();
+}
+
+function tileHTML(i, extra=""){
+  const l = L[i];
+  return `<button class="tile${learned.has(i)?" done":""}" data-i="${i}" aria-label="${l.n}${learned.has(i)?", apprise":""}">
+    <span class="g" lang="ar">${l.c}</span><span class="nm" dir="ltr">${l.n}</span></button>`;
+}
+function renderGrid(){
+  $("#view").innerHTML = `<p class="hint">Touchez une lettre pour la découvrir. L'arabe se lit de droite à gauche, la grille aussi.</p>
+    <div class="grid" dir="rtl">${L.map((_,i)=>tileHTML(i)).join("")}</div>`;
+}
+
+/* Fiche lettre */
+function openSheet(i){
+  cur = i;
+  const l = L[i];
+  const forms = [["Isolée",l.c],["Initiale",l.j?l.c+Z:l.c],["Médiane",l.j?Z+l.c+Z:l.c],["Finale",Z+l.c]];
+  $("#sheet").innerHTML = `
+    <div class="sh-top">
+      <button class="ghost" data-act="prev" ${i===0?"disabled":""}>‹ Précédente</button>
+      <button class="ghost" data-act="close">Fermer</button>
+      <button class="ghost" data-act="next" ${i===27?"disabled":""}>Suivante ›</button>
+    </div>
+    <div class="big" lang="ar">${l.c}</div>
+    <h2>${l.n}<span class="ar" lang="ar">${l.ar}</span></h2>
+    <p class="snd">${l.s}</p>
+    <div class="forms">${forms.map(f=>`<div class="form"><span class="g" lang="ar">${f[1]}</span><span class="lb">${f[0]}</span></div>`).join("")}</div>
+    ${l.j?"":`<p class="note">Cette lettre ne se lie pas à la suivante : en début et au milieu d'un mot, elle garde sa forme isolée.</p>`}
+    <div class="ex">
+      <div>
+        <div class="w" lang="ar">${hl(l)}</div>
+        <div class="m"><b>${l.tr}</b>, ${l.t}</div>
+      </div>
+      ${HAS_TTS?`<button class="round" data-act="word" aria-label="Écouter le mot">▶</button>`:""}
+    </div>
+    <div class="acts">
+      ${HAS_TTS?`<button class="btn main" data-act="say">Écouter la lettre</button>`:""}
+      <button class="btn" data-act="trace">Écrire la lettre au doigt</button>
+      <div class="trace" id="trace" hidden><canvas id="cv"></canvas><button class="btn" data-act="clear" style="width:100%;margin-top:10px">Effacer</button></div>
+      <button class="btn${learned.has(i)?" on":""}" data-act="learn">${learned.has(i)?"Lettre apprise":"Marquer comme apprise"}</button>
+    </div>`;
+  $("#scrim").hidden = false;
+  $("#sheet").scrollTop = 0;
+  const first = $("#sheet [data-act=close]"); first && first.focus();
+}
+function closeSheet(){ $("#scrim").hidden = true; if(HAS_TTS) speechSynthesis.cancel(); }
+
+$("#sheet").addEventListener("click", e => {
+  const b = e.target.closest("[data-act]"); if(!b || b.disabled) return;
+  const a = b.dataset.act;
+  if(a==="close") closeSheet();
+  else if(a==="prev") openSheet(cur-1);
+  else if(a==="next") openSheet(cur+1);
+  else if(a==="say") speak(L[cur].ar);
+  else if(a==="word") speak(L[cur].w);
+  else if(a==="trace") toggleTrace();
+  else if(a==="clear") drawGuide();
+  else if(a==="learn"){
+    learned.has(cur) ? learned.delete(cur) : learned.add(cur);
+    save(); openSheet(cur); render();
+  }
+});
+$("#scrim").addEventListener("click", e => { if(e.target.id==="scrim") closeSheet(); });
+document.addEventListener("keydown", e => { if(e.key==="Escape" && !$("#scrim").hidden) closeSheet(); });
+
+/* Écriture au doigt */
+function drawGuide(){
+  const cv=$("#cv"); if(!cv) return;
+  const d=window.devicePixelRatio||1, w=cv.clientWidth, h=cv.clientHeight;
+  cv.width=w*d; cv.height=h*d;
+  const x=cv.getContext("2d"); x.scale(d,d);
+  const cs=getComputedStyle(document.documentElement);
+  x.font="170px "+cs.getPropertyValue("--ar"); x.textAlign="center"; x.textBaseline="middle";
+  x.globalAlpha=.3; x.fillStyle=cs.getPropertyValue("--muted").trim(); x.fillText(L[cur].c,w/2,h/2+10);
+  x.globalAlpha=1; x.strokeStyle=cs.getPropertyValue("--accent").trim(); x.lineWidth=7; x.lineCap="round"; x.lineJoin="round";
+  cv._x=x;
+}
+function toggleTrace(){ const t=$("#trace"); t.hidden=!t.hidden; if(!t.hidden){ drawGuide(); t.scrollIntoView({block:"nearest"}); } }
+let pen=false;
+$("#sheet").addEventListener("pointerdown",e=>{ if(e.target.id!=="cv") return; pen=true; e.target.setPointerCapture(e.pointerId); const r=e.target.getBoundingClientRect(); e.target._x.beginPath(); e.target._x.moveTo(e.clientX-r.left,e.clientY-r.top); });
+$("#sheet").addEventListener("pointermove",e=>{ if(!pen||e.target.id!=="cv") return; const r=e.target.getBoundingClientRect(); e.target._x.lineTo(e.clientX-r.left,e.clientY-r.top); e.target._x.stroke(); });
+$("#sheet").addEventListener("pointerup",()=>{ pen=false; });
+
+/* Voyelles */
+let vb=1;
+const MARKS=[["\u064E","Fatha","Son « a »"],["\u064F","Damma","Son « ou »"],["\u0650","Kasra","Son « i »"],["\u0652","Soukoun","Pas de voyelle"],["\u0651","Chadda","Consonne doublée"]];
+function renderVowels(){
+  const b=L[vb].c;
+  $("#view").innerHTML=`<p class="hint">Les voyelles courtes sont de petits signes placés sur ou sous la consonne. Choisis une consonne, puis touche une carte pour l'entendre.</p>
+  <div class="chips">${L.map((l,i)=>`<button class="chip" data-vb="${i}" aria-pressed="${i===vb}">${l.c}</button>`).join("")}</div>
+  <div class="vcards">${MARKS.map((m,k)=>`<button class="vcard" data-vm="${k}"><span class="g" lang="ar">${b+m[0]}</span><b>${m[1]}</b><span>${m[2]}</span></button>`).join("")}</div>
+  <p class="note">Voyelles longues : ا allonge le « a », و le « ou » et ي le « i ».</p>`;
+}
+
+/* Lecture de mots */
+let R={deck:shuffle([...Array(28).keys()]),n:0,shown:false,bare:false};
+function renderRead(){
+  const l=L[R.deck[R.n%28]], w=R.bare?l.w.replace(/[\u064B-\u0652]/g,""):l.w;
+  $("#view").innerHTML=`<p class="hint">Déchiffre le mot lettre par lettre, de droite à gauche, puis révèle la réponse.</p>
+  <div class="q-prompt"><div class="word" lang="ar">${w}</div></div>
+  <div class="reveal">${R.shown?`<b>${l.tr}</b>${l.t}`:""}</div>
+  <label class="chk"><input type="checkbox" data-bare ${R.bare?"checked":""}> Sans voyelles (niveau avancé)</label>
+  <div class="acts"><button class="btn main" data-rv="show">${R.shown?"Mot suivant":"Révéler"}</button>
+  ${HAS_TTS?`<button class="btn" data-rv="say">Écouter</button>`:""}</div>`;
+}
+
+/* Exercices */
+function makeOpts(i){
+  const c = L[i].c;
+  const fam = FAM.find(f => f.includes(c));
+  let d = fam ? shuffle([...fam].filter(x=>x!==c).map(x=>L.findIndex(l=>l.c===x))) : [];
+  d = d.slice(0,3);
+  while(d.length<3){ const r=Math.floor(Math.random()*28); if(r!==i && !d.includes(r)) d.push(r); }
+  return shuffle([i,...d]);
+}
+function startQuiz(mode){
+  Q = {mode, qs: shuffle([...Array(28).keys()]).slice(0,10).map(i=>({i,opts:makeOpts(i)})), n:0, score:0, sel:null, missed:[], spoken:-1};
+  renderQuiz();
+}
+function renderQuiz(){
+  const v = $("#view");
+  if(!Q){
+    v.innerHTML = `<p class="hint">Dix questions par série. Les choix proches (comme ب ت ث) sont mélangés pour t'entraîner à bien les distinguer.</p>
+      <div class="modes">
+        <button class="mode" data-mode="name"><b>Quelle est cette lettre ?</b><span>Je vois une lettre, je choisis son nom.</span></button>
+        <button class="mode" data-mode="letter"><b>Quelle lettre est-ce ?</b><span>Je lis un nom, je choisis la lettre.</span></button>
+        ${HAS_TTS?`<button class="mode" data-mode="listen"><b>Écoute et trouve</b><span>J'entends un nom, je choisis la lettre.</span></button>`:""}
+      </div>`;
+    return;
+  }
+  if(Q.n >= Q.qs.length){
+    const msg = Q.score>=9?"Excellent, les lettres n'ont presque plus de secret pour toi.":Q.score>=6?"Bon travail. Revois les lettres ci-dessous.":"Continue, la répétition fait tout. Rouvre les fiches ci-dessous.";
+    v.innerHTML = `<div class="score">${Q.score} / ${Q.qs.length}</div><p>${msg}</p>
+      ${Q.missed.length?`<p class="hint">Lettres à revoir</p><div class="missed" dir="rtl">${Q.missed.map(i=>tileHTML(i)).join("")}</div>`:""}
+      <div class="acts"><button class="btn main" data-again="1">Rejouer</button><button class="btn" data-menu="1">Changer d'exercice</button></div>`;
+    return;
+  }
+  const q = Q.qs[Q.n], l = L[q.i], arOpts = Q.mode !== "name";
+  let prompt = "";
+  if(Q.mode==="name") prompt = `<div class="g" lang="ar">${l.c}</div><div class="sub">Comment s'appelle cette lettre ?</div>`;
+  else if(Q.mode==="letter") prompt = `<div class="nmbig">${l.n}</div><div class="sub">Quelle est cette lettre ?</div>`;
+  else prompt = `<button class="round" data-replay="1" aria-label="Réécouter" style="width:72px;height:72px;font-size:1.6rem">▶</button><div class="sub" style="margin-top:10px">Quelle lettre entends-tu ?</div>`;
+  const opts = q.opts.map(k => {
+    let cls = "opt" + (arOpts?" ar-o":"");
+    if(Q.sel!==null){ if(k===q.i) cls+=" good"; else if(k===Q.sel) cls+=" bad"; }
+    return `<button class="${cls}" data-k="${k}" ${arOpts?'lang="ar"':""}>${arOpts?L[k].c:L[k].n}</button>`;
+  }).join("");
+  let fb = "";
+  if(Q.sel!==null){
+    const ok = Q.sel===q.i;
+    fb = `<p class="fb ${ok?"good":"bad"}">${ok?"Juste.":"C'était "+l.n+"."} <span style="font-weight:400;color:var(--muted)">${l.n} : ${l.s}.</span></p>
+      <div class="acts"><button class="btn main" data-next="1">${Q.n===Q.qs.length-1?"Voir le score":"Question suivante"}</button></div>`;
+  }
+  v.innerHTML = `<div class="q-head"><span>Question ${Q.n+1} sur ${Q.qs.length}</span><span>Score : ${Q.score}</span></div>
+    <div class="q-prompt">${prompt}</div>
+    <div class="opts ${arOpts?"two":""}">${opts}</div>${fb}`;
+  if(Q.mode==="listen" && Q.spoken!==Q.n){ Q.spoken = Q.n; setTimeout(()=>speak(l.ar),150); }
+}
+
+$("#view").addEventListener("click", e => {
+  const t = e.target;
+  const vn = t.closest("[data-vb]");
+  if(vn){ vb=+vn.dataset.vb; document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c===vn)); document.querySelectorAll(".vcard").forEach((c,k)=>c.querySelector(".g").textContent=L[vb].c+MARKS[k][0]); return; }
+  const vm = t.closest("[data-vm]"); if(vm){ speak(L[vb].c+MARKS[+vm.dataset.vm][0]); return; }
+  if(t.matches("[data-bare]")){ R.bare=t.checked; renderRead(); return; }
+  const rv = t.closest("[data-rv]");
+  if(rv){ if(rv.dataset.rv==="say") speak(L[R.deck[R.n%28]].w); else { if(R.shown){R.n++;R.shown=false;} else R.shown=true; renderRead(); } return; }
+  const tile = t.closest(".tile"); if(tile){ openSheet(+tile.dataset.i); return; }
+  const m = t.closest("[data-mode]"); if(m){ startQuiz(m.dataset.mode); return; }
+  if(t.closest("[data-again]")){ startQuiz(Q.mode); return; }
+  if(t.closest("[data-menu]")){ Q = null; renderQuiz(); return; }
+  if(t.closest("[data-replay]")){ speak(L[Q.qs[Q.n].i].ar); return; }
+  if(t.closest("[data-next]")){ Q.n++; Q.sel = null; renderQuiz(); window.scrollTo(0,0); return; }
+  const o = t.closest(".opt");
+  if(o && Q && Q.sel===null){
+    const k = +o.dataset.k, q = Q.qs[Q.n];
+    Q.sel = k;
+    if(k===q.i) Q.score++; else Q.missed.push(q.i);
+    renderQuiz();
+  }
+});
+
+document.querySelector("nav").addEventListener("click", e => {
+  const b = e.target.closest("[data-tab]"); if(!b) return;
+  tab = b.dataset.tab; closeSheet(); render(); window.scrollTo(0,0);
+});
+
+if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
+load();
+</script>
+</body>
+</html>
